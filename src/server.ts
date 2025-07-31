@@ -1,7 +1,12 @@
+import colors from "colors";
+colors.enable();
+import 'reflect-metadata';
 import dotenv from "dotenv";
 import morgan from "morgan";
 import express,{Request,Response,Express} from "express";
 import router from "./routes/testRoutes.js";
+import { authRouter } from './routes/authRoutes.js';
+import { AppDataSource } from './config/DB.js';
 dotenv.config({path:".env"});
 
 const app:Express = express();
@@ -13,7 +18,7 @@ app.use(morgan("dev"));
 
 //request from controller
 app.use("/api/v1/testGet",router);
-
+app.use("/api/v1/auth",authRouter);
 
 //requestsS
 app.get("/",(req:Request,res:Response)=>{
@@ -23,7 +28,16 @@ app.get("/",(req:Request,res:Response)=>{
   })
 })
 
-app.listen(PORT,()=>{
-    console.log(`Server is running in the port ${PORT}`);
+
+AppDataSource.initialize()
+.then(async()=>{
+  console.log("Data-Base connected...".bgCyan);
+  app.listen(PORT,()=>{
+  console.log(`Server is running in the port ${PORT}`.bgBlue);
+
 })
+}
+)
+
+
 
