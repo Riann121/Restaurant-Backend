@@ -2,13 +2,16 @@ import {Express, Request , Response} from 'express';
 import { AppDataSource } from '../config/DB.js';
 import { User } from '../models/userModel.js';
 import "reflect-metadata";
-import colors from "colors";
+import bcrypt from 'bcryptjs';
+import jwt from "jsonwebtoken";
+import dotenv from 'dotenv';
+dotenv.config({path:".env"});
+
 
 //Registration authentication
 const authControler = async(req:Request, res:Response) =>{
     try {
     const {userName, email, password, address, phone, Role} = req.body
-    console.log(`${userName}, ${email}, ${password}, ${address}, ${phone}, ${Role}`)
     if(!userName || !email || !password || !address){
             console.log("error in server")
             res.status(404).send({
@@ -19,20 +22,26 @@ const authControler = async(req:Request, res:Response) =>{
 
         const userRepo = AppDataSource.getRepository(User) ;
         const finding = await userRepo.findOne({where:{email : email}})  
-        if(finding){
-            res.status(205).send({
+        console.log("findings : ",finding?.email)
+        if(finding?.email === email){
+            res.status(300).json({
                  success:false,
                  message:"You already has the email registered..please login"
             }) 
         }
         else{
-        const userData:User = new User(userName, email, password, address, phone, Role);
+//password  hash generation
+        const salt = await bcrypt.genSalt(10);
+        const hashPass = await bcrypt.hash(password, salt);    
+
+        const userData:User = new User(userName, email, hashPass, address, phone, Role);
         const newUser =await userRepo.insert(userData)
         if(newUser){
             console.log(`New User Created ${newUser}`);
             res.status(200).send({
                 success:true,
-                message:"Registration successfull"
+                message:"Registration successfull",
+                newUser
             })
         }
     }
@@ -44,18 +53,38 @@ const authControler = async(req:Request, res:Response) =>{
 }
 
 //loginController
-const loginController = (req:Request , res:Response)=>{
+const loginController = async(req:Request , res:Response)=>{
     try {
-        const {userName, email, password} = req.body;
-        if(!userName || !email || !password){
-            throw new Error("Input fields cannot be empty.")
-        }
-        else{
-            res.status(200).json({
-                success:true,
-                message:"Login successful"
+        const {email, password} = req.body;
+        if(!email || !password){
+            res.status(404).json({
+            success:false,
+            message:"Invalid UserName"
             })
         }
+        const userRepo =  AppDataSource.getRepository(User);
+        const user = await userRepo.findOne({where:{email:email}});
+
+        if(!user){
+            res.status(404).json({
+            success:false,
+            message:"Invalid UserName"
+            })
+        }
+        // hash password check
+        const isPassed = await bcrypt.compare(password,user!.password)
+        if(isPassed){
+            //create jwt
+            const token = jwt.sign({id:req.body._id},process.env.SECRET_KEY!)
+            res.status(200).json({
+                success:true,
+                message:"Login successful",
+                token,
+                user:user,
+                
+            })
+        }
+        
 
     } catch (error) {
         console.log(`Error : ${error}`.bgRed);
@@ -67,4 +96,4 @@ const loginController = (req:Request , res:Response)=>{
 }
 
 
-export  {authControler};
+export  {authControler,loginController};

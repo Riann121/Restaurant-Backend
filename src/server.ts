@@ -7,6 +7,7 @@ import express,{Request,Response,Express} from "express";
 import router from "./routes/testRoutes.js";
 import { authRouter } from './routes/authRoutes.js';
 import { AppDataSource } from './config/DB.js';
+import { userRouter } from "./routes/getUserRoutes.js";
 dotenv.config({path:".env"});
 
 const app:Express = express();
@@ -18,8 +19,10 @@ app.use(morgan("dev"));
 
 //request from controller
 app.use("/api/v1/testGet",router);
+//for Login and Registration
 app.use("/api/v1/auth",authRouter);
-
+//for user to see
+app.use("/api/v1/user",userRouter);
 //requestsS
 app.get("/",(req:Request,res:Response)=>{
   res.send({

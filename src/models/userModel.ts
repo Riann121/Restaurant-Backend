@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 import "reflect-metadata"
-import { PassThrough } from "stream";
+import { Hash } from "crypto";
 
 enum Role{
     ADMIN = "admin",
@@ -44,8 +44,3 @@ export class User{
     }
 }
 
-//userName
-//email
-//password
-//address - array
-//phone
