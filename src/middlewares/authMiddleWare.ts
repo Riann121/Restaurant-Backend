@@ -6,7 +6,6 @@ const authMiddleware = async(req:Request,res:Response,next:NextFunction) => {
         try {
                 const token = req.headers['authorization']?.split(" ")[1];
                 jwt.verify(token!,process.env.SECRET_KEY!,(err,decode)=>{
-                     console.log(decode)
                     if(err){
                         console.log(`Error : ${err}`.bgRed);
                         res.status(500).json({
@@ -17,9 +16,9 @@ const authMiddleware = async(req:Request,res:Response,next:NextFunction) => {
                     else{
                         
                         const payload = decode as jwt.JwtPayload;
-                        //req.body._id = payload;
                         if (!req.body) req.body = {};
-                        req.body._id = payload!._id;
+                        req.body.mail = payload;
+                        
                         next()
                     }
                 })

@@ -7,7 +7,7 @@ import express,{Request,Response,Express} from "express";
 import router from "./routes/testRoutes.js";
 import { authRouter } from './routes/authRoutes.js';
 import { AppDataSource } from './config/DB.js';
-import { userRouter } from "./routes/getUserRoutes.js";
+import { userRouter } from "./routes/userRoutes.js";
 dotenv.config({path:".env"});
 
 const app:Express = express();

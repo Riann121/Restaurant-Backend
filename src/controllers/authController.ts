@@ -8,18 +8,18 @@ import dotenv from 'dotenv';
 dotenv.config({path:".env"});
 
 
-//Registration authentication
+//REGISTRATION AUTHENTICATION CONTROLLER FOR USER
 const authControler = async(req:Request, res:Response) =>{
     try {
-    const {userName, email, password, address, phone, Role} = req.body
-    if(!userName || !email || !password || !address){
+    const {userName, email, password, address, phone, Role, answer} = req.body
+    if(!userName || !email || !password || !address || !phone || !Role || !answer){
             console.log("error in server")
             res.status(404).send({
                 success:false,
                 type:"error",
                 message:"please insert everything"
             }) }
-
+        //data base access
         const userRepo = AppDataSource.getRepository(User) ;
         const finding = await userRepo.findOne({where:{email : email}})  
         console.log("findings : ",finding?.email)
@@ -30,11 +30,17 @@ const authControler = async(req:Request, res:Response) =>{
             }) 
         }
         else{
-//password  hash generation
+        //password  hash generation
         const salt = await bcrypt.genSalt(10);
-        const hashPass = await bcrypt.hash(password, salt);    
+        const hashPass = await bcrypt.hash(password, salt); 
+        
+        //answer hash generation
+       
+        const salt_for_ans = await bcrypt.genSalt(10);
+        const hashAns = await bcrypt.hash(answer, salt_for_ans); 
 
-        const userData:User = new User(userName, email, hashPass, address, phone, Role);
+        //CONSTRACTOR INITIALIZATION
+        const userData:User = new User(userName, email, hashPass, address, phone, Role, hashAns);
         const newUser =await userRepo.insert(userData)
         if(newUser){
             console.log(`New User Created ${newUser}`);
@@ -52,7 +58,7 @@ const authControler = async(req:Request, res:Response) =>{
     }
 }
 
-//loginController
+//LOGIN CONTROLLER FOR USER
 const loginController = async(req:Request , res:Response)=>{
     try {
         const {email, password} = req.body;
@@ -75,7 +81,8 @@ const loginController = async(req:Request , res:Response)=>{
         const isPassed = await bcrypt.compare(password,user!.password)
         if(isPassed){
             //create jwt
-            const token = jwt.sign({id:req.body._id},process.env.SECRET_KEY!)
+            const pass = {email:user?.email};
+            const token = jwt.sign(pass,process.env.SECRET_KEY!)
             res.status(200).json({
                 success:true,
                 message:"Login successful",

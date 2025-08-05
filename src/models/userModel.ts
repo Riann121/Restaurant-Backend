@@ -32,9 +32,13 @@ export class User{
     @Column("varchar",{
         default:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmMDGg7R6MmM2jaF1p9m-xg8Qw7-KxQHVlQQ&s"
     })
-    profile!:string
+    profile!:string;
     
-    constructor(userName:string, email:string, password:string, address:string[], phone:string, role:Role){
+    @Column({type:"varchar", nullable: true})
+    answer!:string;
+
+    //CONSTRUCTOR
+    constructor(userName:string, email:string, password:string, address:string[], phone:string, role:Role, answer:String){
         this.userName = userName;
         this.email = email;
         this.password = password;
