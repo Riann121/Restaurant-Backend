@@ -15,17 +15,17 @@ export class resturantSchema{
     imageURL!:string;
     @Column("varchar",{array:true})
     foods!:string[];
-    @Column("varchar",{default:true})
+    @Column("boolean",{default:true})
     pickup!:boolean;
-    @Column("varchar", {default:true})
+    @Column("boolean", {default:true})
     delivery!:boolean;
-    @Column("varchar",{default:true})
+    @Column("boolean",{default:true})
     isOpen!:boolean;    
     @Column("varchar")
     logoURL!:string;
     @Column("varchar")
     rating!:number;
-    @Column("varchar")
+    @Column(() => coords)
     coords!:coords;
 
     //CONSTRUCTOR

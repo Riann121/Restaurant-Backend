@@ -1,4 +1,5 @@
 import { Column } from "typeorm";
+
 export class coords {
     @Column("varchar")
     id! : string;

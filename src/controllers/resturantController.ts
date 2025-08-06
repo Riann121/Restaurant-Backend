@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import { resturantSchema } from "../models/resturantModel.js";
 dotenv.config()
 
+//REGISTER RESTURANTS
 const createResturents = async(req:Request,res:Response) => {
     try {
         const { title, 
@@ -60,5 +61,22 @@ const createResturents = async(req:Request,res:Response) => {
     }
 }
 
-
-export {createResturents}
+//GET ALL RESTURANTS
+const getAllResturants = async(req:Request,res:Response) => {
+    try {
+        const resturantRepo = AppDataSource.getRepository(resturantSchema) 
+        const allData = await resturantRepo.find()
+                res.status(200).json({
+                success:true,
+                message:"Resturant List",
+                allData
+                })
+    } catch (error) {
+        console.log(`Error : ${error}`.bgRed);
+        res.status(500).json({
+            success:false,
+            message:"Error to show"
+        })
+    }
+}
+export {createResturents,getAllResturants}
