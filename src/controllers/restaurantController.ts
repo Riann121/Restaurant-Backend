@@ -2,7 +2,7 @@
 import { Request,Response } from "express";
 import { AppDataSource } from "../config/DB.js";
 import dotenv from 'dotenv';
-import { resturantSchema } from "../models/resturantModel.js";
+import { resturantSchema } from "../models/restaurantModel.js";
 dotenv.config()
 
 //REGISTER RESTURANTS

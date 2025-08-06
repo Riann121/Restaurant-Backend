@@ -1,4 +1,4 @@
-import { coords } from './../utils/customCoords.js';
+import { coords } from '../utils/customCoords.js';
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 import "reflect-metadata"
 
