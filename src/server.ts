@@ -8,6 +8,7 @@ import router from "./routes/testRoutes.js";
 import { authRouter } from './routes/authRoutes.js';
 import { AppDataSource } from './config/DB.js';
 import { userRouter } from "./routes/userRoutes.js";
+import { routerRes } from "./routes/resturantRoutes.js";
 dotenv.config({path:".env"});
 
 const app:Express = express();
@@ -23,7 +24,14 @@ app.use("/api/v1/testGet",router);
 app.use("/api/v1/auth",authRouter);
 //for user to see
 app.use("/api/v1/user",userRouter);
-//requestsS
+
+//--------------RESTURANTS-----------------
+
+//for resturants
+app.use('/api/v1/resturants',routerRes)
+
+
+//requests
 app.get("/",(req:Request,res:Response)=>{
   res.send({
     "author":"Rian",
@@ -31,7 +39,7 @@ app.get("/",(req:Request,res:Response)=>{
   })
 })
 
-
+//DataBase initialization
 AppDataSource.initialize()
 .then(async()=>{
   console.log("Data-Base connected...".bgCyan);

@@ -1,6 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 import "reflect-metadata"
-import { Hash } from "crypto";
 
 enum Role{
     ADMIN = "admin",

@@ -2,11 +2,12 @@ import { Request,Response } from "express";
 import { AppDataSource } from "../config/DB.js";
 import { User } from "../models/userModel.js";
 import bcrypt from 'bcryptjs';
+import dotenv from 'dotenv';
+dotenv.config()
 
 //GET USER
 const getUserController = async (req:Request,res:Response)=>{
         try {
-            
             const authValue = req.body.mail.email;
             const userRepo = AppDataSource.getRepository(User);
             const userData = await userRepo.findOne({where : {email : authValue}});
@@ -18,7 +19,35 @@ const getUserController = async (req:Request,res:Response)=>{
                 message:"User Data",
                 userData:safeUser
             })
-        console.log(`controller : ${req.body}`);
+        } catch (error) {
+            console.log(`Error : ${error}`.bgRed);
+        res.status(500).json({
+            success:false,
+            message:"Error to show"
+        })
+    }
+}
+
+//GET USER ALL
+const getUserAllController = async (req:Request,res:Response)=>{
+        try {
+            const auth = req.body.adminPass;
+            if(auth == process.env.ADMIN_PASS){
+                const userRepo = AppDataSource.getRepository(User);
+                const allUserData = await userRepo.find();
+                res.status(200).send({
+                    success:true,
+                    message:"User Data",
+                    allUserData,
+                })
+            }
+            else{
+                throw new Error("Authentication Fail");
+                res.status(404).json({
+                    success:false,
+                    message:"Need admin Pass",
+                })
+            }
         } catch (error) {
             console.log(`Error : ${error}`.bgRed);
         res.status(500).json({
@@ -86,11 +115,12 @@ const resetUserPassword = async(req:Request , res:Response)=>{
                 }
             }
             else{
-                throw new Error("Authentication Fail");
+                
                 res.status(500).json({
                 success:false,
                 message:"Update Error"
                 })
+                throw new Error("Authentication Fail");
             }
         }
     } catch (error) {
@@ -102,4 +132,57 @@ const resetUserPassword = async(req:Request , res:Response)=>{
     }
 }
 
-export {getUserController,updateUserController,resetUserPassword}
+//DELETE USERID
+const deleteUser = async(req:Request, res:Response) => {
+    try{ 
+         
+        const {email,adminPass} = req.body;
+        if(!email && !adminPass){
+            
+            throw new Error("Plz Insert all field to delete")
+        }
+        else{
+            if(adminPass === process.env.ADMIN_PASS){
+                //DB access
+                const userRepo = AppDataSource.getRepository(User)
+                const data = await userRepo.findOne({where:{email:email}});
+                const id = data?.id;
+                const deleteStatus = await userRepo.delete({id})
+                if(deleteStatus){
+                    res.status(204).json({
+                    success:true,
+                    message:"Delete Successfull"
+                    })
+                    const user = data?.userName
+                     console.log(`User ${user} account Deleted Successfully`);
+                }
+                else{
+                    res.status(500).json({
+                        success:false,
+                        message:"Delete Unsuccessfull"
+                    })
+                    throw new Error("Delete Unsuccessfull");
+                }
+            }
+            else{
+                res.status(500).json({
+                    success:false,
+                    message:"Authentication Fail"
+                })
+
+                throw new Error("Authentication Fail");
+            }
+        }
+        
+    } catch (error) {
+        console.log(`Error : ${error}`.bgRed);
+        res.status(500).json({
+            success:false,
+            message:"Delete Error"
+        })
+    }
+
+}
+
+
+export {getUserController,getUserAllController,updateUserController,resetUserPassword,deleteUser}
