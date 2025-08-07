@@ -1,8 +1,10 @@
-
+import  jwt, { JwtPayload }  from 'jsonwebtoken';
 import { Request,Response } from "express";
 import { AppDataSource } from "../config/DB.js";
 import dotenv from 'dotenv';
 import { resturantSchema } from "../models/restaurantModel.js";
+import { User } from '../models/userModel.js';
+import bcrypt from 'bcryptjs';
 dotenv.config()
 
 //REGISTER RESTURANTS
@@ -79,4 +81,52 @@ const getAllResturants = async(req:Request,res:Response) => {
         })
     }
 }
-export {createResturents,getAllResturants}
+
+//DELETE RESTURANTS
+const deleteRestaurant = async (req:Request , res:Response) => {
+    try {
+        const {userPassword, id } = req.body
+        const token = req.headers['authorization']?.split(" ")[1];
+        const userRepo = AppDataSource.getRepository(User)
+        if(!token){
+            res.status(404).json({
+                success:false,
+                message:"Please login first"
+                })
+            throw new Error('JWT token Error')
+        }
+        else{
+            const decoded = jwt.decode(token,{complete:true})
+            const mail= (decoded!.payload) as JwtPayload;
+            const userData = await userRepo.findOne({where:{email:mail.email}})
+            const password = userData!.password
+
+            //verify the password
+            const authResult = await bcrypt.compare(userPassword,password)
+            if(!authResult){
+                res.status(404).json({
+                success:false,
+                message:"Password is invaild"
+                })
+                throw new Error('hash password Error')
+            }
+            else{
+                const repo = AppDataSource.getRepository(resturantSchema)
+                await repo.delete({id:id})
+                res.status(200).json({
+                success:true,
+                message:"DELETE successful",
+                })
+            }
+        }
+  
+    } catch (error) {
+        console.log(`Error : ${error}`.bgRed);
+        res.status(500).json({
+            success:false,
+            message:"Error to delete"
+        })
+    }
+}
+
+export {createResturents, getAllResturants, deleteRestaurant}
