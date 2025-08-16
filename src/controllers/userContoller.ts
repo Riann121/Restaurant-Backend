@@ -41,12 +41,12 @@ const getUserAllController = async (req:Request,res:Response)=>{
                     allUserData,
                 })
             }
-            else{
-                throw new Error("Authentication Fail");
+            else{      
                 res.status(404).json({
                     success:false,
-                    message:"Need admin Pass",
+                    message:"Need admin Pass",  
                 })
+                throw new Error("Authentication Fail");
             }
         } catch (error) {
             console.log(`Error : ${error}`.bgRed);

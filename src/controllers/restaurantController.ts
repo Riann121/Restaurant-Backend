@@ -43,7 +43,7 @@ const createResturents = async(req:Request,res:Response) => {
             }
             else{
                 //real object data for database
-                const Data = new resturantSchema(title, imageURL, foods, pickup, delivery, isOpen, logoURL, rating, coords)
+                const Data = new resturantSchema(title, imageURL, pickup, delivery, isOpen, logoURL, rating, coords)
 
                 //DB initialization
                 await resturantRepo.insert(Data)
@@ -129,4 +129,30 @@ const deleteRestaurant = async (req:Request , res:Response) => {
     }
 }
 
-export {createResturents, getAllResturants, deleteRestaurant}
+//GET FOOD BY RESTAURANT
+
+const getFoodbyRestaurant = async (req: Request, res: Response) => {
+    try {
+        const title  = req.body;
+        console.log(title)
+        const restaurantRepo = AppDataSource.getRepository(resturantSchema);
+
+        const data = await restaurantRepo.find({
+            where: {title: title.title,},relations: ["foods"],
+        });
+
+        res.status(200).json({
+            success: true,
+            message: `Foods for restaurant: ${title.title}`,
+            data,
+        });
+    } catch (error) {
+        console.error(`Error: ${error}`);
+        res.status(500).json({
+            success: false,
+            message: "Error fetching restaurant foods",
+        });
+    }
+};
+
+export {createResturents, getAllResturants, deleteRestaurant, getFoodbyRestaurant}

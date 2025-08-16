@@ -34,8 +34,7 @@ const authControler = async(req:Request, res:Response) =>{
         const salt = await bcrypt.genSalt(10);
         const hashPass = await bcrypt.hash(password, salt); 
         
-        //answer hash generation
-       
+        //answer hash generation      
         const salt_for_ans = await bcrypt.genSalt(10);
         const hashAns = await bcrypt.hash(answer, salt_for_ans); 
 
