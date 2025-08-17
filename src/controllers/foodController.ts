@@ -15,8 +15,7 @@ const createFood = async(req:Request,res:Response) => {
         }
         else{
             const foodRepo = AppDataSource.getRepository(foodSchema)
-            const restaurantRepo = AppDataSource.getRepository(resturantSchema)
-
+            
             const isDublicate = await foodRepo.findOne({where:{foodName:foodName, description: description, }})
             
             if(isDublicate){
@@ -65,25 +64,25 @@ const getAllFoods = async(req:Request,res:Response) => {
 }
 
 //GET RESTAURANT BY FOOD
-const getRestaurantbyFood = async(req:Request, res:Response) =>{
-    try {
-        const foodName = req.body.foodName;
-        const foodRepo = AppDataSource.getRepository(foodSchema)
-        const data = await foodRepo.find({where:{foodName:foodName}, relations : ["restaurant"]})
-        res.status(200).json({
-                success:true,
-                message:"Restaurant List",
-                data
-                })
+// const getRestaurantbyFood = async(req:Request, res:Response) =>{
+//     try {
+//         const foodName = req.body.foodName;
+//         const foodRepo = AppDataSource.getRepository(foodSchema)
+//         const data = await foodRepo.find({where:{foodName:foodName}, relations : ["restaurant"]})
+//         res.status(200).json({
+//                 success:true,
+//                 message:"Restaurant List",
+//                 data
+//                 })
 
-    } catch (error) {
-        console.log(`Error : ${error}`.bgRed);
-        res.status(500).json({
-            success:false,
-            message:"Error to show"
-        })
-    }
-}
+//     } catch (error) {
+//         console.log(`Error : ${error}`.bgRed);
+//         res.status(500).json({
+//             success:false,
+//             message:"Error to show"
+//         })
+//     }
+// }
 
 
-export {createFood, getAllFoods, getRestaurantbyFood};
+export {createFood, getAllFoods, };

@@ -10,6 +10,7 @@ import { AppDataSource } from './config/DB.js';
 import { userRouter } from "./routes/userRoutes.js";
 import { routerRes } from "./routes/restaurantRoutes.js";
 import { routerFood } from "./routes/foodRoutes.js";
+import { orderRouter } from "./routes/orderRoutes.js";
 dotenv.config({path:".env"});
 
 const app:Express = express();
@@ -35,6 +36,11 @@ app.use('/api/v1/resturants',routerRes);
 //--------------FOODS-----------------
 
 app.use('/api/v1/food',routerFood)
+
+//--------------ORDER-----------------
+
+app.use('/api/v1/order',orderRouter)
+
 
 //requests
 app.get("/",(req:Request,res:Response)=>{

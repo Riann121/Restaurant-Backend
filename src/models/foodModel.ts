@@ -2,6 +2,7 @@ import { Min, Max } from "class-validator";
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 import "reflect-metadata";
 import { resturantSchema } from "./restaurantModel.js";
+import { orderschema } from "./oderModel.js";
 
 @Entity()
 export class foodSchema {
@@ -26,8 +27,12 @@ export class foodSchema {
     @Max(5)
     rating!: number;
 
-    @OneToMany(() => resturantSchema, restaurant => restaurant.food)
-    restaurants!:resturantSchema[];
+    // @OneToMany(() => resturantSchema, restaurant => restaurant.food)
+    // restaurants!:resturantSchema[];
+
+    @ManyToOne(() => orderschema, order => order.foodDetails)
+    @JoinColumn({name:"orderID"})
+    order!:orderschema;
 
     constructor(foodName: string, description: string, isAvailable: boolean, restaurant: resturantSchema, rating: number) {
         this.foodName = foodName;

@@ -1,7 +1,8 @@
 import { coords } from '../utils/customCoords.js';
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, JoinColumn, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, JoinColumn, ManyToOne, OneToOne } from "typeorm";
 import "reflect-metadata";
 import { foodSchema } from './foodModel.js';
+import { orderschema } from './oderModel.js';
 
 @Entity()
 export class resturantSchema {
@@ -35,9 +36,12 @@ export class resturantSchema {
     @Column(() => coords)
     coords!: coords;
 
-    @ManyToOne(() => foodSchema, food => food.restaurant)
-    @JoinColumn({name: "foodId"})
-    restaurant!:foodSchema;
+    // @ManyToOne(() => foodSchema, food => food.restaurant)
+    // @JoinColumn({name: "foodId"})
+    // food!:foodSchema;
+
+    @OneToOne(() => orderschema, order => order.restaurantDetails)
+    order!:orderschema;
 
     constructor(title: string, imageURL: string, pickup: boolean, delivery: boolean, isOpen: boolean, logoURL: string, rating: string, coords: coords) {
         this.title = title;
