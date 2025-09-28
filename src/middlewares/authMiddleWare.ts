@@ -10,15 +10,14 @@ const authMiddleware = async(req:Request,res:Response,next:NextFunction) => {
                         console.log(`Error : ${err}`.bgRed);
                         res.status(500).json({
                         success:false,
-                        message:"Wrong Authentication"
+                        message:"Authentication Failed"
                         })
                     }
                     else{
                         
                         const payload = decode as jwt.JwtPayload;
                         if (!req.body) req.body = {};
-                        req.body.mail = payload;
-                        
+                        req.body.auth = payload;
                         next()
                     }
                 })

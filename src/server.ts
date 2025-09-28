@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 import morgan from "morgan";
 import express,{Request,Response,Express} from "express";
 import router from "./routes/testRoutes.js";
-import { authRouter } from './routes/authRoutes.js';
+import { authRouter } from './routes/loginRoutes.js';
 import { AppDataSource } from './config/DB.js';
 import { userRouter } from "./routes/userRoutes.js";
 import { routerRes } from "./routes/restaurantRoutes.js";

@@ -6,8 +6,8 @@ import { orderschema } from './oderModel.js';
 
 @Entity()
 export class resturantSchema {
-    @PrimaryGeneratedColumn()
-    id!: number;
+    @PrimaryGeneratedColumn('uuid')
+    restaurantId!: string;
 
     @Column("varchar")
     title!: string;
@@ -19,12 +19,6 @@ export class resturantSchema {
     foods!: foodSchema[];
 
     @Column("boolean", { default: true })
-    pickup!: boolean;
-
-    @Column("boolean", { default: true })
-    delivery!: boolean;
-
-    @Column("boolean", { default: true })
     isOpen!: boolean;
 
     @Column("varchar")
@@ -33,24 +27,14 @@ export class resturantSchema {
     @Column("varchar")
     rating!: string;
 
-    @Column(() => coords)
-    coords!: coords;
-
-    // @ManyToOne(() => foodSchema, food => food.restaurant)
-    // @JoinColumn({name: "foodId"})
-    // food!:foodSchema;
-
     @OneToOne(() => orderschema, order => order.restaurantDetails)
     order!:orderschema;
 
     constructor(title: string, imageURL: string, pickup: boolean, delivery: boolean, isOpen: boolean, logoURL: string, rating: string, coords: coords) {
         this.title = title;
         this.imageURL = imageURL;
-        this.pickup = pickup;
-        this.delivery = delivery;
         this.isOpen = isOpen;
         this.logoURL = logoURL;
         this.rating = rating;
-        this.coords = coords;
     }
 }

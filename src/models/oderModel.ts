@@ -10,28 +10,39 @@ enum status{
     phase3 = "delivered"
 }
 
+
 @Entity()
 export class orderschema{
 
-    @PrimaryGeneratedColumn()
-    orderId!:number;
-
-    //USER DETAIL RELATION
-    @OneToOne(() => User, user => user.id)
-    @JoinColumn({name:"userDetailId"})
-    userDetails!:User;
-
-    //RESTAURANT DETAIL RELATION
-    @OneToOne(() => resturantSchema, restaurants => restaurants.order)  
-    @JoinColumn({name:"restaurantId"})
-    restaurantDetails!:resturantSchema;
+    @PrimaryGeneratedColumn('uuid')
+    orderId!:string;
 
     //FOOD DETAIL RELATION
     @OneToMany(() => foodSchema, foods => foods.order)
     foodDetails!:foodSchema[];
 
+
+    //CLIENT DETAIL RELATION
+    @OneToOne(() => User, user => user.userId)
+    userDetails!:User;
+
+    //RIDER DETAIL RELATION
+    @OneToOne(() => User)
+    riderId!:User;
+
+    //RESTAURANT DETAIL RELATION
+    @OneToOne(() => resturantSchema, restaurant => restaurant.order)  
+    restaurantDetails!:resturantSchema;
+    
+    @Column('varchar')
+    payment!: "Done"|"CashOnDelivery";
+    
+    @Column('varchar')
+    deliveryTime!: string;
+
     @Column("varchar")
     orderStatus!:status;
+
 
     constructor(userDetails:User, restaurantDetails:resturantSchema, foodDetails:foodSchema[], orderStatus:status){
         this.userDetails = userDetails;

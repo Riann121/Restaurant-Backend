@@ -11,8 +11,8 @@ dotenv.config({path:".env"});
 //REGISTRATION AUTHENTICATION CONTROLLER FOR USER
 const authControler = async(req:Request, res:Response) =>{
     try {
-    const {userName, email, password, address, phone, Role, answer} = req.body
-    if(!userName || !email || !password || !address || !phone || !Role || !answer){
+    const {userName, email, password, phone, Role} = req.body
+    if(!userName || !email || !password || !phone || !Role){
             console.log("error in server")
             res.status(404).send({
                 success:false,
@@ -21,25 +21,21 @@ const authControler = async(req:Request, res:Response) =>{
             }) }
         //data base access
         const userRepo = AppDataSource.getRepository(User) ;
-        const finding = await userRepo.findOne({where:{email : email}})  
-        console.log("findings : ",finding?.email)
-        if(finding?.email === email){
+        const finding = await userRepo.findOne({where:{phone : phone}})  
+        if(finding?.phone === phone){
             res.status(300).json({
                  success:false,
+                 type:'error',
                  message:"You already has the email registered..please login"
             }) 
         }
         else{
         //password  hash generation
         const salt = await bcrypt.genSalt(10);
-        const hashPass = await bcrypt.hash(password, salt); 
-        
-        //answer hash generation      
-        const salt_for_ans = await bcrypt.genSalt(10);
-        const hashAns = await bcrypt.hash(answer, salt_for_ans); 
+        const hashPass = await bcrypt.hash(password, salt);  
 
         //CONSTRACTOR INITIALIZATION
-        const userData:User = new User(userName, email, hashPass, address, phone, Role, hashAns);
+        const userData:User = new User(userName, email, hashPass, phone, Role);
         const newUser =await userRepo.insert(userData)
         if(newUser){
             console.log(`New User Created ${newUser}`);
@@ -60,20 +56,20 @@ const authControler = async(req:Request, res:Response) =>{
 //LOGIN CONTROLLER FOR USER
 const loginController = async(req:Request , res:Response)=>{
     try {
-        const {email, password} = req.body;
-        if(!email || !password){
+        const {phone, password} = req.body;
+        if(!phone || !password){
             res.status(404).json({
             success:false,
-            message:"Invalid UserName"
+            message:"Invalid UserInfo..."
             })
         }
         const userRepo =  AppDataSource.getRepository(User);
-        const user = await userRepo.findOne({where:{email:email}});
+        const user = await userRepo.findOne({where:{phone:phone}});
 
         if(!user){
             res.status(404).json({
             success:false,
-            message:"Invalid UserName"
+            message:"User Not found..."
             })
         }
         // hash password check
@@ -96,7 +92,7 @@ const loginController = async(req:Request , res:Response)=>{
         console.log(`Error : ${error}`.bgRed);
         res.status(500).json({
             success:false,
-            message:"Error in the login"
+            message:"Login failed"
         })
     }
 }

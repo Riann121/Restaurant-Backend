@@ -5,15 +5,15 @@ import { orderschema } from "./oderModel.js";
 enum Role{
     ADMIN = "admin",
     CLIENT = "client",
-    VENDOR = "vendor",
-    DRIVER = "driver"
+    OWNER = "owner",
+    DRIVER = "rider"
 }
 
 @Entity()
 export class User{
 
-    @PrimaryGeneratedColumn()
-    id!:number;
+    @PrimaryGeneratedColumn('uuid')
+    userId!:string;
     
     @Column("varchar")
     userName!:string;
@@ -23,9 +23,6 @@ export class User{
     
     @Column("varchar")
     password!:string;
-    
-    @Column("varchar",{array:true})
-    address!:string[];
     
     @Column("varchar")
     phone!:string;
@@ -41,19 +38,12 @@ export class User{
         default:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmMDGg7R6MmM2jaF1p9m-xg8Qw7-KxQHVlQQ&s"
     })
     profile!:string;
-    
-    @Column({type:"varchar", nullable: true})
-    answer!:string;
-
-    @OneToOne(() => orderschema, order => order.userDetails)
-    order!:orderschema;
 
     //CONSTRUCTOR
-    constructor(userName:string, email:string, password:string, address:string[], phone:string, role:Role, answer:String){
+    constructor(userName:string, email:string, password:string, phone:string, role:Role){
         this.userName = userName;
         this.email = email;
         this.password = password;
-        this.address = address;
         this.phone = phone;
         this.role = role;
     }

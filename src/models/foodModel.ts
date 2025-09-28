@@ -6,8 +6,8 @@ import { orderschema } from "./oderModel.js";
 
 @Entity()
 export class foodSchema {
-    @PrimaryGeneratedColumn()
-    id!: number;
+    @PrimaryGeneratedColumn('uuid')
+    foodId!: string;
     
     @Column("varchar")
     foodName!: string;
@@ -19,26 +19,29 @@ export class foodSchema {
     isAvailable!: boolean;
     
     @ManyToOne(() => resturantSchema, restaurant => restaurant.foods, { onDelete: "CASCADE" })
-    @JoinColumn({ name: "restaurantId" })
     restaurant!: resturantSchema;
+
+    @Column()
+    quantity!: number;
+    
+    @Column()
+    timeToMake!:string;
 
     @Column("int")
     @Min(1)
     @Max(5)
     rating!: number;
 
-    // @OneToMany(() => resturantSchema, restaurant => restaurant.food)
-    // restaurants!:resturantSchema[];
-
     @ManyToOne(() => orderschema, order => order.foodDetails)
-    @JoinColumn({name:"orderID"})
     order!:orderschema;
 
-    constructor(foodName: string, description: string, isAvailable: boolean, restaurant: resturantSchema, rating: number) {
+    constructor(foodName: string, description: string, isAvailable: boolean, restaurant: resturantSchema, quantity: number, timeToMake: string, rating: number) {
         this.foodName = foodName;
         this.description = description;
         this.isAvailable = isAvailable;
         this.restaurant = restaurant;
+        this.quantity = quantity;
+        this.timeToMake = timeToMake;
         this.rating = rating;
     }
 }
