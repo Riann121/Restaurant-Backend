@@ -44,10 +44,12 @@ export class orderschema{
     orderStatus!:status;
 
 
-    constructor(userDetails:User, restaurantDetails:resturantSchema, foodDetails:foodSchema[], orderStatus:status){
+    constructor(userDetails:User, restaurantDetails:resturantSchema, foodDetails:foodSchema[], payment:"Done"|"CashOnDelivery", deliveryTime:string, orderStatus:status){
         this.userDetails = userDetails;
         this.restaurantDetails = restaurantDetails;
+        this.payment = payment;
         this.foodDetails = foodDetails;
+        this.deliveryTime = deliveryTime;
         this.orderStatus = orderStatus;
     }
 }

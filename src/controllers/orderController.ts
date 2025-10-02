@@ -19,7 +19,7 @@ const createOrder = async(req:Request, res:Response) => {
         const findRestaurant =await restaurantRepo.findOne({where:{title:restaurantName}})
         const findUser = await userRepo.findOne({where:{phone:userNumber}})
 
-        const data = new orderschema(findUser!,findRestaurant!,findFood!,status.phase1)
+        const data = new orderschema(findUser!,findRestaurant!,findFood!,"CashOnDelivery","default : 10 min",status.phase1)
 //userDetails, restaurantDetails, foodDetails, orderStatus
         const orderRepo = AppDataSource.getRepository(orderschema)
         await orderRepo.insert(data)
