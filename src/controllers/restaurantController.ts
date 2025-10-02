@@ -10,19 +10,9 @@ dotenv.config()
 //REGISTER RESTURANTS
 const createResturents = async(req:Request,res:Response) => {
     try {
-        const { title, 
-                imageURL,
-                foods, 
-                pickup, 
-                delivery, 
-                isOpen,
-                logoURL,
-                rating,
-                coords, } = req.body
-            
-                console.log(title ?? false);
+        const { title, imageURL, isOpen, logoURL, rating} = req.body
 
-        if(!title || !imageURL || !foods || !logoURL || !rating || !coords){
+        if(!title || !imageURL || !logoURL || !rating){
             res.status(404).json({
             success:false,
             message:"Please Insert Every Field."
@@ -31,7 +21,7 @@ const createResturents = async(req:Request,res:Response) => {
         }
         else{
             const resturantRepo = AppDataSource.getRepository(resturantSchema)
-            const isDublicate = await resturantRepo.findOne({where:{title:title,coords:coords}})
+            const isDublicate = await resturantRepo.findOne({where:{title:title, imageURL:imageURL, logoURL:logoURL}})
 
             //check if Resturant is resgistered
             if(isDublicate){
@@ -43,8 +33,7 @@ const createResturents = async(req:Request,res:Response) => {
             }
             else{
                 //real object data for database
-                const Data = new resturantSchema(title, imageURL, pickup, delivery, isOpen, logoURL, rating, coords)
-
+                const Data = new resturantSchema(title, imageURL, isOpen, logoURL, rating)
                 //DB initialization
                 await resturantRepo.insert(Data)
                 res.status(200).json({
@@ -97,8 +86,8 @@ const deleteRestaurant = async (req:Request , res:Response) => {
         }
         else{
             const decoded = jwt.decode(token,{complete:true})
-            const mail= (decoded!.payload) as JwtPayload;
-            const userData = await userRepo.findOne({where:{email:mail.email}})
+            const authValue = (decoded!.payload) as JwtPayload;
+            const userData = await userRepo.findOne({where:{phone:authValue.phone}});
             const password = userData!.password
 
             //verify the password
@@ -112,7 +101,7 @@ const deleteRestaurant = async (req:Request , res:Response) => {
             }
             else{
                 const repo = AppDataSource.getRepository(resturantSchema)
-                await repo.delete({id:id})
+                await repo.delete({restaurantId:id})
                 res.status(200).json({
                 success:true,
                 message:"DELETE successful",
@@ -143,7 +132,7 @@ const getFoodbyRestaurant = async (req: Request, res: Response) => {
 
         res.status(200).json({
             success: true,
-            message: `Foods for restaurant: ${title.title}`,
+            message: `Foods of Restaurant: ${title.title}`,
             data,
         });
     } catch (error) {

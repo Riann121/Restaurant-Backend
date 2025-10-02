@@ -8,32 +8,39 @@ dotenv.config()
 //CREATE FOOD
 const createFood = async(req:Request,res:Response) => {
     try {
-        const {foodName, description, isAvailable, restaurantId, rating} = req.body
-        if(!foodName || !description || !restaurantId || !rating ){
-        // if(false ){    
+        //foodName, description, isAvailable, restaurant, quantity, timeToMake, rating
+        const {foodName, description, isAvailable, quantity, timeToMake, rating} = req.body
+        if(!foodName || !description || !rating || !quantity || !timeToMake){   
             throw new Error("insert all the section")
         }
         else{
             const foodRepo = AppDataSource.getRepository(foodSchema)
-            
-            const isDublicate = await foodRepo.findOne({where:{foodName:foodName, description: description, }})
+            const isDublicate = await foodRepo.findOne({where:{foodName:foodName, description: description, timeToMake: timeToMake}})
             
             if(isDublicate){
+                res.status(500).json({
+                success:false,
+                message:"this food is already available"
+            })
                 throw Error("this food is already available")
             }
             else{
-                const data = new foodSchema(foodName, description, isAvailable, restaurantId, rating )
-                const foodData = await foodRepo.insert(data)
+                const find:string = req.params.restaurantId
+                const restaurantRepo = AppDataSource.getRepository(resturantSchema)
+                const restaurantId = await restaurantRepo.findOne({where:{restaurantId : find}})
+                console.log(JSON.stringify(restaurantId,null,2))
+                if(restaurantId){
+                    const data = new foodSchema(foodName, description, isAvailable, restaurantId, quantity, timeToMake, rating )
+                    const foodData = await foodRepo.insert(data)
 
-                if (foodData) {
-                await foodRepo.insert(data)
-                res.status(200).json({
-                success:true,
-                message:"Created Successfully.",
-                data
+                    if (foodData) {
+                    res.status(200).json({
+                    success:true,
+                    message:"Created Successfully.",
+                    data
                 })
                 }
-            }
+            }}
         }
     } catch (error) {
         console.log(`Error : ${error}`.bgRed);
@@ -85,4 +92,4 @@ const getAllFoods = async(req:Request,res:Response) => {
 // }
 
 
-export {createFood, getAllFoods, };
+export { getAllFoods, createFood};

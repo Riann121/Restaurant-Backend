@@ -5,7 +5,7 @@ import { createFood, getAllFoods} from "../controllers/foodController.js";
 
 const routerFood = Router()
 
-routerFood.post('/register',authMiddleware,createFood)
+routerFood.post('/register/:restaurantId',authMiddleware,createFood)
 
 routerFood.get('/getAll',authMiddleware,getAllFoods)
 

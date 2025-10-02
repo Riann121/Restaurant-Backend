@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, JoinColumn, OneToMany, OneToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, JoinColumn, OneToMany, OneToOne, ManyToOne } from "typeorm";
 import "reflect-metadata";
 import { User } from "./userModel.js";
 import { resturantSchema } from "./restaurantModel.js";
@@ -23,7 +23,7 @@ export class orderschema{
 
 
     //CLIENT DETAIL RELATION
-    @OneToOne(() => User, user => user.userId)
+    @ManyToOne(() => User, user => user.userId)
     userDetails!:User;
 
     //RIDER DETAIL RELATION
@@ -31,7 +31,7 @@ export class orderschema{
     riderId!:User;
 
     //RESTAURANT DETAIL RELATION
-    @OneToOne(() => resturantSchema, restaurant => restaurant.order)  
+    @ManyToOne(() => resturantSchema, restaurant => restaurant.orders,{nullable:true})  
     restaurantDetails!:resturantSchema;
     
     @Column('varchar')

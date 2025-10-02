@@ -13,8 +13,7 @@ const authMiddleware = async(req:Request,res:Response,next:NextFunction) => {
                         message:"Authentication Failed"
                         })
                     }
-                    else{
-                        
+                    else{          
                         const payload = decode as jwt.JwtPayload;
                         if (!req.body) req.body = {};
                         req.body.auth = payload;

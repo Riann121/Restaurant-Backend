@@ -5,20 +5,33 @@ import "reflect-metadata";
 import bcrypt from 'bcryptjs';
 import jwt from "jsonwebtoken";
 import dotenv from 'dotenv';
+import { numberValidation } from '../utils/validation.js';
 dotenv.config({path:".env"});
 
 
 //REGISTRATION AUTHENTICATION CONTROLLER FOR USER
 const authControler = async(req:Request, res:Response) =>{
     try {
-    const {userName, email, password, phone, Role} = req.body
-    if(!userName || !email || !password || !phone || !Role){
+        const {userName, email, password, phone, Role} = req.body
+        if(!userName || !email || !password || !phone || !Role){
             console.log("error in server")
             res.status(404).send({
                 success:false,
                 type:"error",
                 message:"please insert everything"
             }) }
+
+        //PHONE NUMBER FORMAT VALIDATION    
+        const numValidateResult = numberValidation(phone);
+        if(numValidateResult === 0){
+            console.log("error in server")
+            res.status(404).send({
+                success:false,
+                type:"error",
+                message:"Incorrect phone Number format"
+            }) 
+        }
+
         //data base access
         const userRepo = AppDataSource.getRepository(User) ;
         const finding = await userRepo.findOne({where:{phone : phone}})  
@@ -26,7 +39,7 @@ const authControler = async(req:Request, res:Response) =>{
             res.status(300).json({
                  success:false,
                  type:'error',
-                 message:"You already has the email registered..please login"
+                 message:"You already has the Number registered..please login"
             }) 
         }
         else{
@@ -76,7 +89,8 @@ const loginController = async(req:Request , res:Response)=>{
         const isPassed = await bcrypt.compare(password,user!.password)
         if(isPassed){
             //create jwt
-            const pass = {email:user?.email};
+            const pass = {phone:user?.phone};
+            console.log(pass)
             const token = jwt.sign(pass,process.env.SECRET_KEY!)
             res.status(200).json({
                 success:true,

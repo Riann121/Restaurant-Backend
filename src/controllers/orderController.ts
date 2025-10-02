@@ -9,7 +9,7 @@ import { orderschema, status } from '../models/oderModel.js';
 const createOrder = async(req:Request, res:Response) => {
     try {
         const {foodName , restaurantName} = req.body
-        const userMail = req.body.email
+        const userNumber = req.body.auth.phone;
 
         const userRepo = AppDataSource.getRepository(User)
         const foodRepo = AppDataSource.getRepository(foodSchema)
@@ -17,10 +17,10 @@ const createOrder = async(req:Request, res:Response) => {
 
         const findFood = await foodRepo.find({where:{foodName:foodName}})
         const findRestaurant =await restaurantRepo.findOne({where:{title:restaurantName}})
-        const findUser = await userRepo.findOne({where:{email:userMail}})
+        const findUser = await userRepo.findOne({where:{phone:userNumber}})
 
         const data = new orderschema(findUser!,findRestaurant!,findFood!,status.phase1)
-
+//userDetails, restaurantDetails, foodDetails, orderStatus
         const orderRepo = AppDataSource.getRepository(orderschema)
         await orderRepo.insert(data)
                 res.status(200).json({
@@ -37,4 +37,18 @@ const createOrder = async(req:Request, res:Response) => {
     }
 }
 
-export{createOrder}
+const userGetOrder = async(req:Request, res:Response) => {
+    try {
+        const orderRepo = AppDataSource.getRepository(orderschema)
+        const en_auth = req.body.auth.phone;
+        orderRepo.findOne({where:{}})
+    } catch (error) {
+        console.log(`Error : ${error}`.bgRed);
+        res.status(500).json({
+            success:false,
+            message:"Cannot Show ORDER"
+        })
+    }
+}
+
+export{createOrder, userGetOrder}

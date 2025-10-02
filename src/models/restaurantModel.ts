@@ -1,4 +1,3 @@
-import { coords } from '../utils/customCoords.js';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, JoinColumn, ManyToOne, OneToOne } from "typeorm";
 import "reflect-metadata";
 import { foodSchema } from './foodModel.js';
@@ -6,6 +5,7 @@ import { orderschema } from './oderModel.js';
 
 @Entity()
 export class resturantSchema {
+    
     @PrimaryGeneratedColumn('uuid')
     restaurantId!: string;
 
@@ -27,14 +27,15 @@ export class resturantSchema {
     @Column("varchar")
     rating!: string;
 
-    @OneToOne(() => orderschema, order => order.restaurantDetails)
-    order!:orderschema;
+    @OneToMany(() => orderschema, order => order.restaurantDetails)
+    orders!:orderschema[];
 
-    constructor(title: string, imageURL: string, pickup: boolean, delivery: boolean, isOpen: boolean, logoURL: string, rating: string, coords: coords) {
+    constructor(title: string, imageURL: string, isOpen: boolean, logoURL: string, rating: string) {
         this.title = title;
         this.imageURL = imageURL;
         this.isOpen = isOpen;
         this.logoURL = logoURL;
         this.rating = rating;
+
     }
 }

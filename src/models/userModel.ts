@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, OneToMany } from "typeorm";
 import "reflect-metadata"
 import { orderschema } from "./oderModel.js";
 
@@ -34,6 +34,9 @@ export class User{
     })
     role!:Role;
     
+    @OneToMany(() => orderschema, (order) => order.userDetails)
+    orders!:orderschema[];
+
     @Column("varchar",{
         default:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmMDGg7R6MmM2jaF1p9m-xg8Qw7-KxQHVlQQ&s"
     })

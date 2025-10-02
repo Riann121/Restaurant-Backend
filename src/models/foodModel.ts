@@ -18,17 +18,17 @@ export class foodSchema {
     @Column({ type: "boolean", default: true })
     isAvailable!: boolean;
     
-    @ManyToOne(() => resturantSchema, restaurant => restaurant.foods, { onDelete: "CASCADE" })
+    @ManyToOne(() => resturantSchema, restaurant => restaurant.foods)
     restaurant!: resturantSchema;
 
-    @Column()
+    @Column("int")
     quantity!: number;
     
-    @Column()
+    @Column("varchar")
     timeToMake!:string;
 
-    @Column("int")
-    @Min(1)
+    @Column("int",{default:0})
+    @Min(0)
     @Max(5)
     rating!: number;
 
