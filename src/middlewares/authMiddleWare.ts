@@ -2,6 +2,7 @@
 import jwt  from 'jsonwebtoken';
 import { Request,Response,NextFunction } from "express"
 
+
 const authMiddleware = async(req:Request,res:Response,next:NextFunction) => {
         try {
                 const token = req.headers['authorization']?.split(" ")[1];
@@ -13,12 +14,13 @@ const authMiddleware = async(req:Request,res:Response,next:NextFunction) => {
                         message:"Authentication Failed"
                         })
                     }
-                    else{          
+                             
                         const payload = decode as jwt.JwtPayload;
+                        //console.log(JSON.stringify(payload))
                         if (!req.body) req.body = {};
                         req.body.auth = payload;
                         next()
-                    }
+                    
                 })
                 
         } catch (error) {

@@ -1,12 +1,12 @@
 import { Router } from "express";
 import { authMiddleware } from "../middlewares/authMiddleWare.js";
-import { createResturents, deleteRestaurant, getAllResturants, getFoodbyRestaurant } from "../controllers/restaurantController.js";
+import { createResturents, deleteRestaurant, getAllResturantsForUser, getFoodbyRestaurant } from "../controllers/restaurantController.js";
 
 const routerRes = Router()
 
 routerRes.post('/register',authMiddleware,createResturents)
 
-routerRes.get('/getAll',authMiddleware,getAllResturants)
+routerRes.get('/getAllforUser',authMiddleware,getAllResturantsForUser)
 
 routerRes.get('/searchFood',authMiddleware,getFoodbyRestaurant)
 

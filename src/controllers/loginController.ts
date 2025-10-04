@@ -89,7 +89,7 @@ const loginController = async(req:Request , res:Response)=>{
         const isPassed = await bcrypt.compare(password,user!.password)
         if(isPassed){
             //create jwt
-            const pass = {phone:user?.phone};
+            const pass = {phone:user?.phone,role:user?.role};
             console.log(pass)
             const token = jwt.sign(pass,process.env.SECRET_KEY!)
             res.status(200).json({

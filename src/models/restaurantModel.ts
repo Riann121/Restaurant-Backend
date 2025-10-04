@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany, JoinColumn, ManyToOn
 import "reflect-metadata";
 import { foodSchema } from './foodModel.js';
 import { orderschema } from './oderModel.js';
+import { User } from "./userModel.js";
 
 @Entity()
 export class resturantSchema {
@@ -11,6 +12,9 @@ export class resturantSchema {
 
     @Column("varchar")
     title!: string;
+
+    @OneToOne(()=>User, user => user.userId)
+    restaurantOwner!: User;
 
     @Column("varchar", { default: "" })
     imageURL!: string;
@@ -30,8 +34,9 @@ export class resturantSchema {
     @OneToMany(() => orderschema, order => order.restaurantDetails)
     orders!:orderschema[];
 
-    constructor(title: string, imageURL: string, isOpen: boolean, logoURL: string, rating: string) {
+    constructor(title: string,owner: User, imageURL: string, isOpen: boolean, logoURL: string, rating: string) {
         this.title = title;
+        this.restaurantOwner = owner
         this.imageURL = imageURL;
         this.isOpen = isOpen;
         this.logoURL = logoURL;
